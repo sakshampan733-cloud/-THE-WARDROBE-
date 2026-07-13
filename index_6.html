@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Wardrobe">
+<meta name="theme-color" content="#16130F">
+<title>The Wardrobe — Saksham</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16130F;
+  --ink-2:#1E1913;
+  --panel:#241E16;
+  --panel-2:#2C251B;
+  --linen:#EAE2D3;
+  --smoke:#9A9081;
+  --brass:#B69352;
+  --brass-soft:rgba(182,147,82,.32);
+  --bordeaux:#6E2B2B;
+  --line:rgba(234,226,211,.12);
+  --shadow:0 18px 40px rgba(0,0,0,.5);
+  --radius:14px;
+  --tabbar-h:calc(64px + env(safe-area-inset-bottom));
+  --disp:'Marcellus', Georgia, 'Times New Roman', serif;
+  --body:'Outfit', -apple-system, 'SF Pro Text', system-ui, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%}
+body{
+  min-height:100%;
+  background:
+    radial-gradient(1200px 500px at 50% -10%, rgba(182,147,82,.08), transparent 60%),
+    var(--ink);
+  color:var(--linen);
+  font-family:var(--body);
+  font-weight:300;
+  letter-spacing:.01em;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  overscroll-behavior:none;
+}
+img{display:block;max-width:100%}
+button{font-family:var(--body);color:inherit;background:none;border:none;cursor:pointer}
+input,select,textarea{font-family:var(--body);color:var(--linen)}
+::selection{background:var(--brass-soft)}
+
+/* ---------- Header ---------- */
+header.app{
+  padding:calc(26px + env(safe-area-inset-top)) 22px 14px;
+  text-align:center;
+  position:relative;
+}
+h1.masthead{
+  font-family:var(--disp);
+  font-size:clamp(30px,6vw,44px);
+  font-weight:400;letter-spacing:.06em;line-height:1.05;
+}
+.masthead-rule{
+  width:64px;height:1px;margin:14px auto 0;
+  background:linear-gradient(90deg,transparent,var(--brass),transparent);
+}
+.header-count{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--smoke);margin-top:10px}
+
+/* ---------- Views / layout ---------- */
+main{padding:6px 18px calc(var(--tabbar-h) + 28px);max-width:900px;margin:0 auto}
+.view{display:none;animation:viewIn .45s cubic-bezier(.22,1,.36,1)}
+.view.active{display:block}
+@keyframes viewIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.section-head{
+  display:flex;align-items:baseline;justify-content:space-between;
+  margin:26px 2px 4px;
+}
+.section-title{
+  font-family:var(--disp);font-size:19px;letter-spacing:.14em;text-transform:uppercase;color:var(--linen);
+}
+.section-sub{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--smoke)}
+
+/* ---------- The rail (signature) ---------- */
+.rail{
+  position:relative;
+  padding-top:18px;
+  margin-bottom:8px;
+}
+.rail::before{
+  content:'';position:absolute;top:10px;left:0;right:0;height:2px;border-radius:2px;
+  background:linear-gradient(90deg, rgba(182,147,82,.05), var(--brass) 12%, #d8bc7e 50%, var(--brass) 88%, rgba(182,147,82,.05));
+  box-shadow:0 1px 0 rgba(0,0,0,.6), 0 6px 14px rgba(182,147,82,.14);
+}
+.rack{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));
+  gap:20px 14px;padding-top:6px;
+}
+@media(min-width:700px){.rack{grid-template-columns:repeat(auto-fill,minmax(168px,1fr))}}
+
+.garment{
+  position:relative;
+  transform-origin:top center;
+  animation:hangIn .7s cubic-bezier(.34,1.4,.4,1) backwards;
+  cursor:pointer;
+}
+.garment:nth-child(2n){animation-delay:.06s}
+.garment:nth-child(3n){animation-delay:.12s}
+.garment:nth-child(4n){animation-delay:.05s}
+@keyframes hangIn{from{opacity:0;transform:translateY(-10px) rotate(-2.5deg)}to{opacity:1;transform:none}}
+.garment .hook{
+  width:12px;height:14px;margin:0 auto;
+  border:2px solid var(--brass);border-bottom:none;border-radius:7px 7px 0 0;
+  opacity:.9;
+}
+.garment .frame{
+  border-radius:52% 52% 10px 10px / 20% 20% 10px 10px;
+  overflow:hidden;
+  background:var(--panel);
+  border:1px solid var(--line);
+  box-shadow:0 12px 26px rgba(0,0,0,.45);
+  aspect-ratio:3/3.6;
+  position:relative;
+  transition:box-shadow .3s ease, transform .3s ease;
+}
+.garment:hover .frame{box-shadow:0 18px 34px rgba(0,0,0,.55), 0 0 0 1px var(--brass-soft)}
+.garment .frame img{width:100%;height:100%;object-fit:cover}
+.garment .swatch{
+  position:absolute;bottom:8px;right:8px;width:16px;height:16px;border-radius:50%;
+  border:1.5px solid rgba(22,19,15,.85);box-shadow:0 0 0 1.5px rgba(234,226,211,.55);
+}
+.garment .g-name{
+  margin-top:9px;text-align:center;font-size:12px;letter-spacing:.04em;color:var(--linen);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.garment .g-color{font-size:10px;text-align:center;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke);margin-top:2px}
+
+@media (hover:hover){
+  .garment:hover{animation:sway 1.6s ease-in-out infinite}
+}
+@keyframes sway{0%,100%{transform:rotate(0)}25%{transform:rotate(1.4deg)}75%{transform:rotate(-1.4deg)}}
+
+/* ---------- Filter chips ---------- */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:14px 2px 6px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;padding:8px 16px;border-radius:999px;
+  border:1px solid var(--line);color:var(--smoke);
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:400;
+  transition:all .25s ease;background:transparent;
+}
+.chip.on{border-color:var(--brass);color:var(--brass);background:rgba(182,147,82,.08)}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 22px;border-radius:999px;
+  font-size:12px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;
+  transition:transform .2s ease, box-shadow .2s ease, opacity .2s;
+  user-select:none;-webkit-user-select:none;
+}
+.btn:active{transform:scale(.97)}
+.btn-brass{
+  background:linear-gradient(160deg,#cfae67,var(--brass) 55%,#8f7238);
+  color:#181307;box-shadow:0 10px 24px rgba(182,147,82,.25);
+}
+.btn-ghost{border:1px solid var(--line);color:var(--linen)}
+.btn-ghost.danger{border-color:rgba(110,43,43,.7);color:#c98080}
+.btn[disabled]{opacity:.4;pointer-events:none}
+.btn-row{display:flex;gap:10px;margin-top:18px}
+.btn-row .btn{flex:1}
+
+.fab{
+  position:fixed;right:20px;bottom:calc(var(--tabbar-h) + 18px);z-index:40;
+  width:58px;height:58px;border-radius:50%;
+  background:linear-gradient(160deg,#cfae67,var(--brass) 55%,#8f7238);
+  color:#181307;font-size:26px;line-height:1;
+  box-shadow:0 14px 30px rgba(0,0,0,.5), 0 4px 14px rgba(182,147,82,.35);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.fab:active{transform:scale(.9) rotate(90deg)}
+
+/* ---------- Empty state ---------- */
+.empty{
+  text-align:center;padding:52px 26px;color:var(--smoke);
+  border:1px dashed var(--line);border-radius:var(--radius);margin-top:16px;
+}
+.empty .e-mark{font-family:var(--disp);font-size:34px;color:var(--brass);margin-bottom:12px}
+.empty p{font-size:13.5px;line-height:1.7;max-width:340px;margin:0 auto}
+
+/* ---------- Sheets & modals ---------- */
+.scrim{
+  position:fixed;inset:0;background:rgba(10,8,5,.66);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  z-index:60;opacity:0;pointer-events:none;transition:opacity .3s ease;
+}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:70;
+  background:linear-gradient(180deg,var(--ink-2),var(--ink));
+  border-top:1px solid var(--brass-soft);
+  border-radius:22px 22px 0 0;
+  max-height:calc(100dvh - 48px);
+  transform:translateY(105%);
+  transition:transform .42s cubic-bezier(.22,1,.36,1);
+  display:flex;flex-direction:column;
+}
+.sheet.open{transform:none}
+.sheet-grip{width:40px;height:4px;border-radius:2px;background:var(--line);margin:12px auto 0;flex:0 0 auto}
+.sheet-close{
+  position:absolute;top:14px;right:14px;z-index:5;
+  width:34px;height:34px;border-radius:50%;
+  background:var(--panel);border:1px solid var(--line);
+  color:var(--linen);font-size:19px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .15s ease, background .2s;
+}
+.sheet-close:active{transform:scale(.9);background:var(--panel-2)}
+.sheet-body{overflow-y:auto;padding:14px 22px calc(24px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
+.sheet-title{font-family:var(--disp);font-size:20px;letter-spacing:.12em;text-transform:uppercase;text-align:center;margin:8px 0 4px}
+.sheet-sub{text-align:center;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--smoke);margin-bottom:16px}
+@media(min-width:700px){
+  .sheet{left:50%;right:auto;width:560px;transform:translate(-50%,105%)}
+  .sheet.open{transform:translate(-50%,0)}
+}
+
+/* ---------- Forms ---------- */
+.field{margin-bottom:16px}
+.field label{
+  display:block;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--brass);
+  margin-bottom:8px;font-weight:500;
+}
+.input{
+  width:100%;padding:14px 16px;border-radius:12px;
+  background:var(--panel);border:1px solid var(--line);
+  font-size:16px;font-weight:300;outline:none;
+  transition:border-color .25s;
+}
+.input:focus{border-color:var(--brass)}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cat-opt{
+  padding:12px 6px;border-radius:12px;border:1px solid var(--line);
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke);text-align:center;
+  transition:all .22s;
+}
+.cat-opt.on{border-color:var(--brass);color:var(--brass);background:rgba(182,147,82,.08)}
+
+.photo-drop{
+  aspect-ratio:4/3.4;border-radius:16px;border:1.5px dashed var(--brass-soft);
+  background:var(--panel);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  color:var(--smoke);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+  overflow:hidden;position:relative;cursor:pointer;
+}
+.photo-drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.photo-drop .pd-icon{font-family:var(--disp);font-size:30px;color:var(--brass)}
+
+.color-row{display:flex;gap:10px;align-items:stretch}
+.color-well{
+  flex:0 0 58px;border-radius:12px;border:1px solid var(--line);overflow:hidden;position:relative;
+}
+.color-well input[type=color]{
+  position:absolute;inset:-8px;width:calc(100% + 16px);height:calc(100% + 16px);
+  border:none;padding:0;background:none;cursor:pointer;
+}
+.color-row .input{flex:1}
+.hint{font-size:11px;color:var(--smoke);margin-top:7px;line-height:1.55;letter-spacing:.02em}
+
+/* ---------- Item detail ---------- */
+.detail-hero{
+  border-radius:52% 52% 14px 14px / 18% 18% 14px 14px;overflow:hidden;
+  border:1px solid var(--line);max-width:280px;margin:6px auto 16px;box-shadow:var(--shadow);
+}
+.detail-hero img{width:100%;aspect-ratio:3/3.5;object-fit:cover}
+
+/* ---------- Outfits ---------- */
+.outfit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:16px;margin-top:14px}
+.outfit-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 12px 12px;cursor:pointer;transition:transform .25s ease, box-shadow .25s;
+  animation:hangIn .6s cubic-bezier(.34,1.3,.4,1) backwards;
+}
+.outfit-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.o-stack{display:flex;justify-content:center;margin-bottom:12px;min-height:74px}
+.o-stack .o-thumb{
+  width:58px;height:70px;border-radius:10px;overflow:hidden;border:2px solid var(--ink-2);
+  box-shadow:0 6px 14px rgba(0,0,0,.4);background:var(--panel-2);
+}
+.o-stack .o-thumb:not(:first-child){margin-left:-20px}
+.o-stack .o-thumb img{width:100%;height:100%;object-fit:cover}
+.o-name{font-family:var(--disp);font-size:14px;letter-spacing:.08em;text-align:center}
+.o-meta{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--smoke);text-align:center;margin-top:4px}
+
+/* ---------- Builder / flat-lay ---------- */
+.slotlist{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.slot{
+  display:flex;align-items:center;gap:14px;padding:10px 12px;border-radius:14px;
+  background:var(--panel);border:1px solid var(--line);cursor:pointer;transition:border-color .25s;
+}
+.slot.filled{border-color:var(--brass-soft)}
+.slot .s-thumb{
+  width:52px;height:60px;border-radius:10px;background:var(--ink-2);overflow:hidden;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;color:var(--smoke);font-size:18px;
+  border:1px solid var(--line);
+}
+.slot .s-thumb img{width:100%;height:100%;object-fit:cover}
+.slot .s-label{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--brass)}
+.slot .s-value{font-size:14px;margin-top:3px}
+.slot .s-value.muted{color:var(--smoke);font-weight:300}
+.slot .s-x{margin-left:auto;color:var(--smoke);font-size:18px;padding:8px}
+
+.picker-row{display:flex;gap:12px;overflow-x:auto;padding:10px 2px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.picker-row::-webkit-scrollbar{display:none}
+.pick{flex:0 0 96px;text-align:center;cursor:pointer}
+.pick .p-img{
+  width:96px;height:112px;border-radius:12px;overflow:hidden;border:2px solid transparent;
+  background:var(--panel-2);transition:border-color .2s, transform .2s;
+}
+.pick .p-img img{width:100%;height:100%;object-fit:cover}
+.pick.on .p-img{border-color:var(--brass);transform:scale(1.03)}
+.pick .p-name{font-size:10.5px;color:var(--smoke);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* assembled look, staggered entrance */
+.look{display:flex;flex-direction:column;align-items:center;gap:0;padding:8px 0 4px}
+.look .look-piece{
+  width:150px;height:150px;border-radius:16px;overflow:hidden;
+  border:2px solid var(--ink-2);box-shadow:0 14px 30px rgba(0,0,0,.5);
+  animation:pieceIn .55s cubic-bezier(.34,1.4,.5,1) backwards;
+  background:var(--panel-2);
+}
+.look .look-piece:not(:first-child){margin-top:-34px}
+.look .look-piece:nth-child(1){animation-delay:.05s}
+.look .look-piece:nth-child(2){animation-delay:.16s;transform:rotate(-2deg)}
+.look .look-piece:nth-child(3){animation-delay:.27s;transform:rotate(1.6deg)}
+.look .look-piece:nth-child(4){animation-delay:.38s;transform:rotate(-1.2deg)}
+.look .look-piece:nth-child(5){animation-delay:.49s;transform:rotate(2deg)}
+.look .look-piece img{width:100%;height:100%;object-fit:cover}
+@keyframes pieceIn{from{opacity:0;transform:translateY(26px) scale(.92)}to{opacity:1}}
+
+/* ---------- Inspo ---------- */
+.inspo-stage{
+  border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--panel);
+  position:relative;margin-top:14px;
+}
+#inspoCanvas{display:block;width:100%;height:auto;cursor:crosshair;touch-action:manipulation}
+.tapdot{
+  position:absolute;width:26px;height:26px;border-radius:50%;
+  border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.5), 0 4px 10px rgba(0,0,0,.5);
+  transform:translate(-50%,-50%);pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:600;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8);
+  animation:dotIn .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes dotIn{from{transform:translate(-50%,-50%) scale(0)}to{transform:translate(-50%,-50%) scale(1)}}
+.sample-list{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.sample{
+  display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;
+  background:var(--panel);border:1px solid var(--line);
+}
+.sample .sm-dot{width:26px;height:26px;border-radius:50%;flex:0 0 auto;border:1.5px solid rgba(234,226,211,.4)}
+.sample .sm-cat{font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+.sample .sm-x{margin-left:auto;color:var(--smoke);padding:6px 8px;font-size:16px}
+
+.match-block{margin-top:18px}
+.match-row{
+  display:flex;align-items:center;gap:14px;padding:12px;border-radius:14px;
+  background:var(--panel);border:1px solid var(--line);margin-bottom:10px;
+  animation:viewIn .5s cubic-bezier(.22,1,.36,1) backwards;
+}
+.match-row .m-img{width:64px;height:76px;border-radius:10px;overflow:hidden;background:var(--panel-2);flex:0 0 auto}
+.match-row .m-img img{width:100%;height:100%;object-fit:cover}
+.match-row .m-cat{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--brass)}
+.match-row .m-name{font-size:14.5px;margin-top:3px}
+.match-row .m-note{font-size:11px;color:var(--smoke);margin-top:3px;letter-spacing:.02em}
+.match-row.missing{border-color:rgba(110,43,43,.55)}
+.match-row.missing .m-cat{color:#c98080}
+.badge{
+  margin-left:auto;flex:0 0 auto;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+  padding:6px 10px;border-radius:999px;border:1px solid var(--brass-soft);color:var(--brass);
+}
+.badge.bad{border-color:rgba(110,43,43,.6);color:#c98080}
+
+/* ---------- Category popover ---------- */
+.pop{
+  position:fixed;z-index:90;background:var(--ink-2);border:1px solid var(--brass-soft);
+  border-radius:14px;padding:8px;display:none;box-shadow:var(--shadow);
+}
+.pop.open{display:grid;grid-template-columns:1fr 1fr;gap:6px;animation:dotIn .25s cubic-bezier(.34,1.4,.5,1)}
+.pop button{
+  padding:10px 14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--linen);
+  border-radius:10px;border:1px solid var(--line);
+}
+.pop button:active{background:var(--brass-soft)}
+
+/* ---------- Tab bar ---------- */
+nav.tabbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;
+  height:var(--tabbar-h);padding-bottom:env(safe-area-inset-bottom);
+  background:rgba(20,16,11,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-top:1px solid var(--line);
+  display:flex;justify-content:space-around;align-items:center;
+}
+.tab{
+  flex:1;height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  color:var(--smoke);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:500;
+  transition:color .25s;position:relative;
+}
+.tab .t-glyph{font-family:var(--disp);font-size:19px;line-height:1;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.tab.on{color:var(--brass)}
+.tab.on .t-glyph{transform:translateY(-2px)}
+.tab.on::after{
+  content:'';position:absolute;top:0;width:26px;height:2px;border-radius:2px;background:var(--brass);
+}
+
+/* ---------- Toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:calc(var(--tabbar-h) + 16px);transform:translate(-50%,20px);
+  background:var(--ink-2);border:1px solid var(--brass-soft);color:var(--linen);
+  padding:12px 22px;border-radius:999px;font-size:13px;letter-spacing:.04em;
+  z-index:100;opacity:0;pointer-events:none;transition:all .35s cubic-bezier(.22,1,.36,1);
+  box-shadow:var(--shadow);white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- Settings list ---------- */
+.settings-list{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.set-row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:16px;border-radius:14px;background:var(--panel);border:1px solid var(--line);
+  font-size:14px;cursor:pointer;
+}
+.set-row small{display:block;color:var(--smoke);font-size:11px;margin-top:3px;letter-spacing:.03em}
+.set-row .arrow{color:var(--brass);font-size:16px}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header class="app">
+  <h1 class="masthead">The Wardrobe</h1>
+  <div class="masthead-rule"></div>
+  <div class="header-count" id="headerCount"></div>
+</header>
+
+<main>
+  <!-- ============ CLOSET ============ -->
+  <section class="view active" id="view-closet">
+    <div class="chips" id="catChips"></div>
+    <div id="closetBody"></div>
+  </section>
+
+  <!-- ============ OUTFITS ============ -->
+  <section class="view" id="view-outfits">
+    <div class="section-head">
+      <div class="section-title">Looks</div>
+      <div class="section-sub" id="outfitCount"></div>
+    </div>
+    <div id="outfitBody"></div>
+    <div class="btn-row"><button class="btn btn-ghost" id="btnFitPhoto">Save today&rsquo;s fit</button><button class="btn btn-brass" id="btnNewOutfit">Compose a look</button></div>
+  </section>
+
+  <!-- ============ INSPO ============ -->
+  <section class="view" id="view-inspo">
+    <div class="section-head">
+      <div class="section-title">Inspiration</div>
+      <div class="section-sub">Pinterest &rarr; your closet</div>
+    </div>
+    <div class="hint" style="margin-top:8px">Upload a look you love. Tap each piece in the photo — its top, bottom, shoes — and I&rsquo;ll assemble the closest version from what you already own, and tell you exactly what&rsquo;s missing.</div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="btnInspoUpload">Upload inspiration</button>
+      <button class="btn btn-ghost" id="btnInspoReset" style="display:none">Start over</button>
+    </div>
+    <div class="inspo-stage" id="inspoStage" style="display:none">
+      <canvas id="inspoCanvas"></canvas>
+      <div id="tapLayer"></div>
+    </div>
+    <div class="sample-list" id="sampleList"></div>
+    <div class="btn-row" id="matchBtnRow" style="display:none">
+      <button class="btn btn-brass" id="btnMatch">Find it in my closet</button>
+    </div>
+    <div class="match-block" id="matchBlock"></div>
+  </section>
+
+  <!-- ============ ATELIER (settings) ============ -->
+  <section class="view" id="view-settings">
+    <div class="section-head"><div class="section-title">Atelier</div></div>
+    <div class="settings-list">
+      <div class="set-row" id="btnExport">
+        <div>Export wardrobe<small>Download a full backup — items, photos and looks — as one file.</small></div>
+        <span class="arrow">&rarr;</span>
+      </div>
+      <div class="set-row" id="btnImport">
+        <div>Restore from backup<small>Import a previously exported wardrobe file.</small></div>
+        <span class="arrow">&rarr;</span>
+      </div>
+      <div class="set-row" id="btnWipe">
+        <div>Empty the wardrobe<small>Removes everything on this device. Export first.</small></div>
+        <span class="arrow" style="color:#c98080">&times;</span>
+      </div>
+    </div>
+    <div class="hint" style="margin-top:18px">Everything lives on this device only — no cloud, no account. Because of that, clearing Safari&rsquo;s website data would also clear the wardrobe, so keep an exported backup somewhere safe. To use it like an app: open this file&rsquo;s address in Safari, then Share &rarr; Add to Home Screen.</div>
+  </section>
+</main>
+
+<button class="fab" id="fabAdd" aria-label="Add garment">+</button>
+
+<nav class="tabbar">
+  <button class="tab on" data-view="closet"><span class="t-glyph">&#8853;</span>Closet</button>
+  <button class="tab" data-view="outfits"><span class="t-glyph">&sect;</span>Looks</button>
+  <button class="tab" data-view="inspo"><span class="t-glyph">&#10022;</span>Inspo</button>
+  <button class="tab" data-view="settings"><span class="t-glyph">&#9670;</span>Atelier</button>
+</nav>
+
+<!-- ============ ADD / EDIT ITEM SHEET ============ -->
+<div class="scrim" id="scrimItem"></div>
+<div class="sheet" id="sheetItem">
+  <button class="sheet-close" data-close="Item" aria-label="Close">&times;</button>
+  <div class="sheet-grip"></div>
+  <div class="sheet-body">
+    <div class="sheet-title" id="itemSheetTitle">New garment</div>
+    <div class="sheet-sub">Photograph it once, wear it forever</div>
+
+    <div class="field">
+      <div class="photo-drop" id="photoDrop">
+        <span class="pd-icon">&#10022;</span>
+        <span>Tap to photograph</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <button class="chip" id="btnUncut" style="display:none">Undo cut-out</button>
+        <button class="chip" id="btnSplitLink">Need to crop? Cut pieces from any photo &rarr;</button>
+      </div>
+      <div class="hint" id="cutHint">Backgrounds are removed automatically so the piece hangs like a sticker. The first cut-out downloads its scissors (a ~40&nbsp;MB model, once) — give it a moment and stay online for that first one.</div>
+    </div>
+
+    <div class="field">
+      <label>Name</label>
+      <input class="input" id="fName" placeholder="e.g. Black overshirt" maxlength="48">
+    </div>
+
+    <div class="field">
+      <label>Category</label>
+      <div class="cat-grid" id="fCats"></div>
+    </div>
+
+    <div class="field">
+      <label>True colour</label>
+      <div class="color-row">
+        <div class="color-well"><input type="color" id="fColor" value="#888888"></div>
+        <input class="input" id="fColorName" placeholder="Colour in your words — e.g. washed olive" maxlength="32">
+      </div>
+      <div class="hint">I read the dominant colour from the photo automatically. If the camera lied, correct the swatch — matching trusts this, not the photo.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost danger" id="btnDeleteItem" style="display:none">Remove</button>
+      <button class="btn btn-brass" id="btnSaveItem">Hang it up</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ OUTFIT BUILDER SHEET ============ -->
+<div class="scrim" id="scrimOutfit"></div>
+<div class="sheet" id="sheetOutfit">
+  <button class="sheet-close" data-close="Outfit" aria-label="Close">&times;</button>
+  <div class="sheet-grip"></div>
+  <div class="sheet-body">
+    <div class="sheet-title" id="outfitSheetTitle">Compose a look</div>
+    <div class="sheet-sub">Pick a piece for each layer</div>
+    <div class="field">
+      <label>Name the look</label>
+      <input class="input" id="oName" placeholder="e.g. Friday at the works" maxlength="48">
+    </div>
+    <div class="slotlist" id="slotList"></div>
+    <div id="pickerArea"></div>
+    <div id="lookPreview"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost danger" id="btnDeleteOutfit" style="display:none">Remove</button>
+      <button class="btn btn-brass" id="btnSaveOutfit">Save the look</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WORN FIT VIEWER ============ -->
+<div class="scrim" id="scrimFit"></div>
+<div class="sheet" id="sheetFit">
+  <button class="sheet-close" data-close="Fit" aria-label="Close">&times;</button>
+  <div class="sheet-grip"></div>
+  <div class="sheet-body">
+    <div class="sheet-title">Worn fit</div>
+    <div class="detail-hero" style="border-radius:16px"><img id="fitImg" alt="" style="width:100%;aspect-ratio:3/3.8;object-fit:cover"></div>
+    <div class="field"><label>Name the fit</label><input class="input" id="fitName" maxlength="48"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost danger" id="btnFitDelete">Remove</button>
+      <button class="btn btn-brass" id="btnFitSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- category popover for inspo taps -->
+<div class="pop" id="catPop"></div>
+
+<div class="toast" id="toast"></div>
+
+<input type="file" id="fileItem" accept="image/*" hidden>
+<input type="file" id="fileInspo" accept="image/*" hidden>
+<input type="file" id="fileImport" accept="application/json,.json" hidden>
+<input type="file" id="fileFit" accept="image/*" hidden>
+
+<script>
+'use strict';
+/* ================= Data layer (IndexedDB) ================= */
+const DB_NAME='wardrobe-atelier', DB_VER=2;
+let db=null, memMode=false;
+function openDB(){
+  return new Promise(res=>{
+    let done=false;
+    const finish=ok=>{if(done)return;done=true;if(!ok){memMode=true;db=null;}res();};
+    let rq=null;
+    try{rq=indexedDB.open(DB_NAME,DB_VER);}catch(e){return finish(false);}
+    rq.onupgradeneeded=e=>{try{
+      const d=e.target.result;
+      if(!d.objectStoreNames.contains('items'))d.createObjectStore('items',{keyPath:'id'});
+      if(!d.objectStoreNames.contains('outfits'))d.createObjectStore('outfits',{keyPath:'id'});
+      if(!d.objectStoreNames.contains('meta'))d.createObjectStore('meta',{keyPath:'key'});
+    }catch(err){}};
+    rq.onsuccess=()=>{db=rq.result;finish(true);};
+    rq.onerror=()=>finish(false);
+    rq.onblocked=()=>finish(false);
+    setTimeout(()=>finish(false),4000);
+  });
+}
+function dbAll(store){
+  return new Promise(res=>{
+    if(!db)return res([]);
+    try{
+      const rq=db.transaction(store,'readonly').objectStore(store).getAll();
+      rq.onsuccess=()=>res(rq.result||[]);rq.onerror=()=>res([]);
+    }catch(e){res([]);}
+  });
+}
+function dbPut(store,val){
+  return new Promise(res=>{
+    if(!db)return res();
+    try{
+      const tx=db.transaction(store,'readwrite');
+      tx.objectStore(store).put(val);
+      tx.oncomplete=()=>res();tx.onerror=()=>res();tx.onabort=()=>res();
+    }catch(e){res();}
+  });
+}
+function dbDel(store,id){
+  return new Promise(res=>{
+    if(!db)return res();
+    try{
+      const tx=db.transaction(store,'readwrite');
+      tx.objectStore(store).delete(id);
+      tx.oncomplete=()=>res();tx.onerror=()=>res();tx.onabort=()=>res();
+    }catch(e){res();}
+  });
+}
+function dbClear(store){
+  return new Promise(res=>{
+    if(!db)return res();
+    try{
+      const tx=db.transaction(store,'readwrite');
+      tx.objectStore(store).clear();
+      tx.oncomplete=()=>res();tx.onerror=()=>res();tx.onabort=()=>res();
+    }catch(e){res();}
+  });
+}
+
+function dbMetaGet(k){
+  return new Promise(res=>{
+    if(!db)return res(null);
+    try{
+      const rq=db.transaction('meta','readonly').objectStore('meta').get(k);
+      rq.onsuccess=()=>res(rq.result?rq.result.v:null);rq.onerror=()=>res(null);
+    }catch(e){res(null);}
+  });
+}
+function dbMetaPut(k,v){return dbPut('meta',{key:k,v});}
+
+/* ================= State & constants ================= */
+const CATS=[
+  {id:'top',      label:'Top'},
+  {id:'bottom',   label:'Bottom'},
+  {id:'outerwear',label:'Layer'},
+  {id:'shoes',    label:'Shoes'},
+  {id:'accessory',label:'Accessory'}
+];
+const CAT_LABEL=Object.fromEntries(CATS.map(c=>[c.id,c.label]));
+const SLOT_ORDER=['outerwear','top','bottom','shoes','accessory'];
+let items=[], outfits=[];
+let closetFilter='all';
+let editingItemId=null, pendingPhoto=null, pendingCat=null, pendingCut=false, pendingOriginal=null;
+let builder={slots:{},editingId:null};
+let inspo={img:null,samples:[],scale:1};
+
+/* ================= Tiny helpers ================= */
+const $=s=>document.querySelector(s);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastTimer=null;
+function toast(msg){
+  const t=$('#toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+window.addEventListener('error',e=>{try{toast('Error: '+(e.message||'something broke'));}catch(_){}});
+window.addEventListener('unhandledrejection',e=>{try{toast('Error: '+((e.reason&&e.reason.message)||e.reason||'async failure'));}catch(_){}});
+const _arm={};
+function armConfirm(key,msg){
+  const t=Date.now();
+  if(_arm[key]&&t-_arm[key]<3500){_arm[key]=0;return true;}
+  _arm[key]=t;toast(msg);return false;
+}
+let _openSheets=0;
+function openSheet(id){_openSheets++;document.body.classList.add('sheet-open');$('#scrim'+id).classList.add('open');$('#sheet'+id).classList.add('open');}
+function closeSheet(id){_openSheets=Math.max(0,_openSheets-1);if(!_openSheets)document.body.classList.remove('sheet-open');$('#scrim'+id).classList.remove('open');$('#sheet'+id).classList.remove('open');}
+
+/* ================= Colour science ================= */
+function hexToRgb(hex){
+  const m=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex||'');
+  return m?{r:parseInt(m[1],16),g:parseInt(m[2],16),b:parseInt(m[3],16)}:{r:136,g:136,b:136};
+}
+const rgbToHex=(r,g,b)=>'#'+[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
+function rgbToLab({r,g,b}){
+  let [R,G,B]=[r,g,b].map(v=>{v/=255;return v>0.04045?Math.pow((v+0.055)/1.055,2.4):v/12.92;});
+  let x=(R*0.4124+G*0.3576+B*0.1805)/0.95047,
+      y=(R*0.2126+G*0.7152+B*0.0722),
+      z=(R*0.0193+G*0.1192+B*0.9505)/1.08883;
+  const f=t=>t>0.008856?Math.cbrt(t):(7.787*t)+16/116;
+  x=f(x);y=f(y);z=f(z);
+  return {L:116*y-16,a:500*(x-y),b:200*(y-z)};
+}
+function deltaE(hex1,hex2){
+  const a=rgbToLab(hexToRgb(hex1)),b=rgbToLab(hexToRgb(hex2));
+  return Math.sqrt((a.L-b.L)**2+(a.a-b.a)**2+(a.b-b.b)**2);
+}
+/* Dominant colour: centre-weighted coarse clustering on a small canvas */
+function dominantColor(img){
+  const c=document.createElement('canvas'),s=64;c.width=s;c.height=s;
+  const g=c.getContext('2d',{willReadFrequently:true});
+  g.drawImage(img,0,0,s,s);
+  let data;
+  try{data=g.getImageData(0,0,s,s).data;}catch(e){return '#888888';}
+  const bins={};
+  for(let y=0;y<s;y++)for(let x=0;x<s;x++){
+    const i=(y*s+x)*4;
+    if(data[i+3]<200)continue;
+    const dx=(x-s/2)/(s/2),dy=(y-s/2)/(s/2);
+    const w=Math.max(0.05,1-Math.sqrt(dx*dx+dy*dy));       // centre weight
+    const r=data[i],gg=data[i+1],b=data[i+2];
+    const key=(r>>5)+','+(gg>>5)+','+(b>>5);               // 8x8x8 bins
+    const e=bins[key]||(bins[key]={w:0,r:0,g:0,b:0});
+    e.w+=w;e.r+=r*w;e.g+=gg*w;e.b+=b*w;
+  }
+  let best=null;
+  for(const k in bins)if(!best||bins[k].w>best.w)best=bins[k];
+  if(!best)return '#888888';
+  return rgbToHex(best.r/best.w,best.g/best.w,best.b/best.w);
+}
+
+/* ================= Photo intake (resize + compress) ================= */
+function fileToImage(file){
+  return new Promise((res,rej)=>{
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=()=>res({img,url});
+    img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('That file could not be read as an image.'));};
+    img.src=url;
+  });
+}
+function compress(img,max){
+  const r=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));
+  const c=document.createElement('canvas');
+  c.width=Math.max(1,Math.round(img.naturalWidth*r));
+  c.height=Math.max(1,Math.round(img.naturalHeight*r));
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  return c.toDataURL('image/jpeg',0.82);
+}
+
+/* ================= Header + tabs ================= */
+function renderHeader(){
+  $('#headerCount').textContent=items.length
+    ? items.length+(items.length===1?' piece':' pieces')+' · '+outfits.length+(outfits.length===1?' look':' looks')
+    : 'An empty rail, for now';
+}
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    $('#view-'+t.dataset.view).classList.add('active');
+    $('#fabAdd').style.display=t.dataset.view==='closet'?'flex':'none';
+    window.scrollTo({top:0});
+  });
+});
+
+/* ================= Closet ================= */
+function renderChips(){
+  const wrap=$('#catChips');wrap.innerHTML='';
+  const all=[{id:'all',label:'Everything'},...CATS];
+  all.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='chip'+(closetFilter===c.id?' on':'');
+    b.textContent=c.label;
+    b.addEventListener('click',()=>{closetFilter=c.id;renderCloset();});
+    wrap.appendChild(b);
+  });
+}
+function garmentCard(it){
+  const d=document.createElement('div');
+  d.className='garment';
+  d.innerHTML=
+    '<div class="hook"></div>'+
+    '<div class="frame"><img class="'+(it.cut?'cutimg':'')+'" alt="'+esc(it.name)+'" src="'+it.photo+'">'+
+    '<span class="swatch" style="background:'+esc(it.colorHex)+'"></span></div>'+
+    '<div class="g-name">'+esc(it.name)+'</div>'+
+    '<div class="g-color">'+esc(it.colorName||CAT_LABEL[it.category]||'')+'</div>';
+  d.addEventListener('click',()=>openItemSheet(it.id));
+  return d;
+}
+function renderCloset(){
+  renderChips();renderHeader();
+  const body=$('#closetBody');body.innerHTML='';
+  const list=closetFilter==='all'?items:items.filter(i=>i.category===closetFilter);
+  if(!list.length){
+    body.innerHTML='<div class="empty"><div class="e-mark">&#10022;</div><p>'+
+      (items.length? 'Nothing hangs here yet. Try another rail.' :
+      'The rail is bare. Tap <b>+</b> and photograph your first piece — a favourite top is a good place to start.')+'</p></div>';
+    return;
+  }
+  const groups=closetFilter==='all'
+    ? CATS.map(c=>({cat:c,arr:list.filter(i=>i.category===c.id)})).filter(g=>g.arr.length)
+    : [{cat:CATS.find(c=>c.id===closetFilter),arr:list}];
+  groups.forEach(g=>{
+    const h=document.createElement('div');h.className='section-head';
+    h.innerHTML='<div class="section-title">'+esc(g.cat.label)+(g.cat.id==='shoes'?'':'s')+'</div>'+
+                '<div class="section-sub">'+g.arr.length+'</div>';
+    body.appendChild(h);
+    const rail=document.createElement('div');rail.className='rail';
+    const rack=document.createElement('div');rack.className='rack';
+    g.arr.slice().sort((a,b)=>b.createdAt-a.createdAt).forEach(it=>rack.appendChild(garmentCard(it)));
+    rail.appendChild(rack);body.appendChild(rail);
+  });
+}
+
+/* ================= Add / edit item ================= */
+function renderCatOptions(){
+  const g=$('#fCats');g.innerHTML='';
+  CATS.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='cat-opt'+(pendingCat===c.id?' on':'');
+    b.textContent=c.label;
+    b.addEventListener('click',()=>{pendingCat=c.id;renderCatOptions();});
+    g.appendChild(b);
+  });
+}
+function resetItemSheet(){
+  editingItemId=null;pendingPhoto=null;pendingCat=null;pendingCut=false;pendingOriginal=null;
+  $('#btnUncut').style.display='none';
+  $('#itemSheetTitle').textContent='New garment';
+  $('#fName').value='';$('#fColorName').value='';$('#fColor').value='#888888';
+  $('#btnDeleteItem').style.display='none';
+  $('#photoDrop').innerHTML='<span class="pd-icon">&#10022;</span><span>Tap to photograph</span>';
+  renderCatOptions();
+}
+function openItemSheet(id){
+  if(id){
+    const it=items.find(i=>i.id===id);if(!it)return;
+    editingItemId=id;pendingPhoto=it.photo;pendingCat=it.category;pendingCut=!!it.cut;pendingOriginal=null;
+    $('#btnUncut').style.display='none';
+    $('#itemSheetTitle').textContent='Edit garment';
+    $('#fName').value=it.name;$('#fColor').value=it.colorHex;$('#fColorName').value=it.colorName||'';
+    $('#photoDrop').innerHTML='<img alt="" src="'+it.photo+'">';
+    $('#btnDeleteItem').style.display='';
+    renderCatOptions();
+  } else resetItemSheet();
+  openSheet('Item');
+}
+$('#fabAdd').addEventListener('click',()=>openItemSheet(null));
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('.sheet-close');
+  if(btn)closeSheet(btn.dataset.close);
+});
+$('#scrimItem').addEventListener('click',()=>closeSheet('Item'));
+$('#photoDrop').addEventListener('click',()=>$('#fileItem').click());
+$('#fileItem').addEventListener('change',async e=>{
+  const f=e.target.files[0];e.target.value='';
+  if(!f)return;
+  try{
+    const {img,url}=await fileToImage(f);
+    const src=toCanvas(img,900);
+    URL.revokeObjectURL(url);
+    pendingOriginal=src.toDataURL('image/jpeg',0.82);
+    setDropBusy('Cutting it out&hellip;');
+    let cut=null;
+    try{cut=await cutoutCanvas(src);}catch(_){cut=null;}
+    if(cut){pendingPhoto=cut;pendingCut=true;$('#btnUncut').style.display='';}
+    else{pendingPhoto=pendingOriginal;pendingCut=false;$('#btnUncut').style.display='none';toast('Could not cut it out — using the full photo');}
+    await setColorFrom(pendingPhoto);
+    showDrop(pendingPhoto,pendingCut);
+  }catch(err){setDropBusy(null);toast(err.message);}
+});
+$('#btnUncut').addEventListener('click',async ()=>{
+  if(!pendingOriginal)return;
+  pendingPhoto=pendingOriginal;pendingCut=false;
+  $('#btnUncut').style.display='none';
+  await setColorFrom(pendingPhoto);
+  showDrop(pendingPhoto,false);
+});
+$('#btnSplitLink').addEventListener('click',()=>{const ph=pendingOriginal||pendingPhoto;closeSheet('Item');openSplit(ph);});
+$('#btnSaveItem').addEventListener('click',async ()=>{
+  if(!pendingPhoto)return toast('Photograph the piece first');
+  if(!pendingCat)return toast('Choose a category');
+  const name=$('#fName').value.trim()||'Untitled piece';
+  const rec={
+    id:editingItemId||uid(),
+    name,category:pendingCat,
+    colorHex:$('#fColor').value,
+    colorName:$('#fColorName').value.trim(),
+    photo:pendingPhoto,
+    cut:!!pendingCut,
+    createdAt:editingItemId?(items.find(i=>i.id===editingItemId)?.createdAt||Date.now()):Date.now()
+  };
+  await dbPut('items',rec);
+  const ix=items.findIndex(i=>i.id===rec.id);
+  if(ix>-1)items[ix]=rec;else items.push(rec);
+  closeSheet('Item');renderCloset();
+  toast(editingItemId?'Updated':'Hung on the rail');
+});
+$('#btnDeleteItem').addEventListener('click',async ()=>{
+  if(!editingItemId)return;
+  if(!armConfirm('delItem','Tap Remove again to confirm'))return;
+  await dbDel('items',editingItemId);
+  items=items.filter(i=>i.id!==editingItemId);
+  for(const o of outfits){
+    if(o.itemIds.includes(editingItemId)){
+      o.itemIds=o.itemIds.filter(x=>x!==editingItemId);
+      await dbPut('outfits',o);
+    }
+  }
+  closeSheet('Item');renderCloset();renderOutfits();
+  toast('Removed');
+});
+
+/* ================= Outfits ================= */
+function renderOutfits(){
+  renderHeader();
+  $('#outfitCount').textContent=outfits.length?outfits.length+' saved':'';
+  const body=$('#outfitBody');body.innerHTML='';
+  if(!outfits.length){
+    body.innerHTML='<div class="empty"><div class="e-mark">&sect;</div><p>No looks yet. Compose one from the pieces on your rail — layer, top, bottom, shoes — and it&rsquo;s saved for the mornings you can&rsquo;t decide.</p></div>';
+    return;
+  }
+  const mk=(o,ix)=>{
+    const its=o.itemIds.map(id=>items.find(i=>i.id===id)).filter(Boolean);
+    const card=document.createElement('div');card.className='outfit-card';
+    card.style.animationDelay=(ix*0.05)+'s';
+    const stack=o.photoLook
+      ? '<div class="o-stack"><div class="o-thumb" style="width:92px;height:108px"><img alt="" src="'+o.photoLook+'"></div></div>'
+      : '<div class="o-stack">'+
+        its.slice(0,4).map(i=>'<div class="o-thumb"><img class="'+(i.cut?'cutimg':'')+'" alt="" src="'+i.photo+'"></div>').join('')+
+        (its.length? '':'<div class="o-thumb"></div>')+'</div>';
+    card.innerHTML=stack+'<div class="o-name">'+esc(o.name)+'</div>'+
+      '<div class="o-meta">'+(o.photoLook?'Worn fit':its.length+(its.length===1?' piece':' pieces'))+'</div>';
+    card.addEventListener('click',()=>o.photoLook?openFitView(o.id):openBuilder(o.id));
+    return card;
+  };
+  [
+    {title:'Worn fits',arr:outfits.filter(o=>o.photoLook)},
+    {title:'Composed looks',arr:outfits.filter(o=>!o.photoLook)}
+  ].filter(g=>g.arr.length).forEach(g=>{
+    const h=document.createElement('div');h.className='section-head';
+    h.innerHTML='<div class="section-title" style="font-size:14px">'+g.title+'</div><div class="section-sub">'+g.arr.length+'</div>';
+    body.appendChild(h);
+    const grid=document.createElement('div');grid.className='outfit-grid';
+    g.arr.slice().sort((a,b)=>b.createdAt-a.createdAt).forEach((o,ix)=>grid.appendChild(mk(o,ix)));
+    body.appendChild(grid);
+  });
+}
+
+function slotThumb(it){
+  return it?'<img class="'+(it.cut?'cutimg':'')+'" alt="" src="'+it.photo+'">':'&#8853;';
+}
+function renderSlots(){
+  const wrap=$('#slotList');wrap.innerHTML='';
+  SLOT_ORDER.forEach(cat=>{
+    const it=builder.slots[cat]?items.find(i=>i.id===builder.slots[cat]):null;
+    const row=document.createElement('div');
+    row.className='slot'+(it?' filled':'');
+    row.innerHTML='<div class="s-thumb">'+slotThumb(it)+'</div>'+
+      '<div><div class="s-label">'+esc(CAT_LABEL[cat])+'</div>'+
+      '<div class="s-value'+(it?'':' muted')+'">'+(it?esc(it.name):'Choose…')+'</div></div>'+
+      (it?'<button class="s-x" aria-label="Clear">&times;</button>':'');
+    row.addEventListener('click',e=>{
+      if(e.target.classList.contains('s-x')){
+        delete builder.slots[cat];renderSlots();renderPicker(null);renderLook();return;
+      }
+      renderPicker(cat);
+    });
+    wrap.appendChild(row);
+  });
+}
+function renderPicker(cat){
+  const area=$('#pickerArea');area.innerHTML='';
+  if(!cat)return;
+  const pool=items.filter(i=>i.category===cat);
+  const head=document.createElement('div');head.className='section-head';
+  head.innerHTML='<div class="section-title" style="font-size:13px">'+esc(CAT_LABEL[cat])+(cat==='shoes'?'':'s')+' on your rail</div>';
+  area.appendChild(head);
+  if(!pool.length){
+    area.insertAdjacentHTML('beforeend','<div class="hint">Nothing in this category yet — add it from the Closet tab first.</div>');
+    return;
+  }
+  const row=document.createElement('div');row.className='picker-row';
+  pool.forEach(it=>{
+    const p=document.createElement('div');
+    p.className='pick'+(builder.slots[cat]===it.id?' on':'');
+    p.innerHTML='<div class="p-img"><img class="'+(it.cut?'cutimg':'')+'" alt="" src="'+it.photo+'"></div><div class="p-name">'+esc(it.name)+'</div>';
+    p.addEventListener('click',()=>{
+      builder.slots[cat]=it.id;
+      renderSlots();renderPicker(cat);renderLook();
+    });
+    row.appendChild(p);
+  });
+  area.appendChild(row);
+}
+function renderLook(){
+  const wrap=$('#lookPreview');
+  const chosen=SLOT_ORDER.map(c=>builder.slots[c]?items.find(i=>i.id===builder.slots[c]):null).filter(Boolean);
+  wrap.innerHTML=chosen.length
+    ? '<div class="section-head"><div class="section-title" style="font-size:13px">The look</div></div><div class="look">'+
+      chosen.map(i=>'<div class="look-piece"><img class="'+(i.cut?'cutimg':'')+'" alt="" src="'+i.photo+'"></div>').join('')+'</div>'
+    : '';
+}
+function openBuilder(id){
+  builder={slots:{},editingId:id||null};
+  if(id){
+    const o=outfits.find(x=>x.id===id);if(!o)return;
+    $('#outfitSheetTitle').textContent='Edit look';
+    $('#oName').value=o.name;
+    o.itemIds.forEach(iid=>{
+      const it=items.find(i=>i.id===iid);
+      if(it)builder.slots[it.category]=it.id;
+    });
+    $('#btnDeleteOutfit').style.display='';
+  } else {
+    $('#outfitSheetTitle').textContent='Compose a look';
+    $('#oName').value='';
+    $('#btnDeleteOutfit').style.display='none';
+  }
+  renderSlots();renderPicker(null);renderLook();
+  openSheet('Outfit');
+}
+$('#btnNewOutfit').addEventListener('click',()=>{
+  if(!items.length)return toast('Hang some pieces first');
+  openBuilder(null);
+});
+$('#scrimOutfit').addEventListener('click',()=>closeSheet('Outfit'));
+$('#btnSaveOutfit').addEventListener('click',async ()=>{
+  const ids=SLOT_ORDER.map(c=>builder.slots[c]).filter(Boolean);
+  if(!ids.length)return toast('Pick at least one piece');
+  const rec={
+    id:builder.editingId||uid(),
+    name:$('#oName').value.trim()||'Untitled look',
+    itemIds:ids,
+    createdAt:builder.editingId?(outfits.find(o=>o.id===builder.editingId)?.createdAt||Date.now()):Date.now()
+  };
+  await dbPut('outfits',rec);
+  const ix=outfits.findIndex(o=>o.id===rec.id);
+  if(ix>-1)outfits[ix]=rec;else outfits.push(rec);
+  closeSheet('Outfit');renderOutfits();
+  toast('Look saved');
+});
+$('#btnDeleteOutfit').addEventListener('click',async ()=>{
+  if(!builder.editingId)return;
+  if(!armConfirm('delOutfit','Tap Remove again to confirm'))return;
+  await dbDel('outfits',builder.editingId);
+  outfits=outfits.filter(o=>o.id!==builder.editingId);
+  closeSheet('Outfit');renderOutfits();
+  toast('Removed');
+});
+
+/* ================= Inspiration matcher ================= */
+const inspoCanvas=$('#inspoCanvas');
+$('#btnInspoUpload').addEventListener('click',()=>$('#fileInspo').click());
+$('#fileInspo').addEventListener('change',async e=>{
+  const f=e.target.files[0];e.target.value='';
+  if(!f)return;
+  try{
+    const {img,url}=await fileToImage(f);
+    inspo={img,samples:[],scale:1};
+    const maxW=Math.min(860,document.querySelector('main').clientWidth-4);
+    const r=Math.min(1,maxW/img.naturalWidth);
+    inspoCanvas.width=Math.round(img.naturalWidth*r);
+    inspoCanvas.height=Math.round(img.naturalHeight*r);
+    inspo.scale=r;
+    inspoCanvas.getContext('2d',{willReadFrequently:true}).drawImage(img,0,0,inspoCanvas.width,inspoCanvas.height);
+    URL.revokeObjectURL(url);
+    $('#inspoStage').style.display='';
+    $('#btnInspoReset').style.display='';
+    $('#tapLayer').innerHTML='';$('#sampleList').innerHTML='';$('#matchBlock').innerHTML='';
+    $('#matchBtnRow').style.display='none';
+    toast('Now tap each piece in the photo');
+  }catch(err){toast(err.message);}
+});
+$('#btnInspoReset').addEventListener('click',()=>{
+  inspo={img:null,samples:[],scale:1};
+  $('#inspoStage').style.display='none';
+  $('#btnInspoReset').style.display='none';
+  $('#tapLayer').innerHTML='';$('#sampleList').innerHTML='';$('#matchBlock').innerHTML='';
+  $('#matchBtnRow').style.display='none';
+});
+function sampleAt(px,py){
+  const g=inspoCanvas.getContext('2d',{willReadFrequently:true});
+  const R=4,x0=Math.max(0,px-R),y0=Math.max(0,py-R);
+  const w=Math.min(inspoCanvas.width-x0,R*2+1),h=Math.min(inspoCanvas.height-y0,R*2+1);
+  const d=g.getImageData(x0,y0,w,h).data;
+  let r=0,gg=0,b=0,n=0;
+  for(let i=0;i<d.length;i+=4){r+=d[i];gg+=d[i+1];b+=d[i+2];n++;}
+  return rgbToHex(r/n,gg/n,b/n);
+}
+let pendingTap=null;
+inspoCanvas.addEventListener('click',e=>{
+  const rect=inspoCanvas.getBoundingClientRect();
+  const cx=(e.clientX-rect.left)*(inspoCanvas.width/rect.width);
+  const cy=(e.clientY-rect.top)*(inspoCanvas.height/rect.height);
+  pendingTap={x:cx,y:cy,hex:sampleAt(Math.round(cx),Math.round(cy)),
+              relX:(e.clientX-rect.left)/rect.width,relY:(e.clientY-rect.top)/rect.height};
+  const pop=$('#catPop');pop.innerHTML='';
+  CATS.forEach(c=>{
+    const b=document.createElement('button');b.textContent=c.label;
+    b.addEventListener('click',()=>{confirmTap(c.id)});
+    pop.appendChild(b);
+  });
+  pop.classList.add('open');
+  const pw=200;
+  pop.style.left=Math.max(8,Math.min(window.innerWidth-pw-8,e.clientX-pw/2))+'px';
+  pop.style.top=Math.min(window.innerHeight-180,e.clientY+14)+'px';
+});
+document.addEventListener('click',e=>{
+  const pop=$('#catPop');
+  if(pop.classList.contains('open')&&!pop.contains(e.target)&&e.target!==inspoCanvas)pop.classList.remove('open');
+},true);
+function confirmTap(cat){
+  $('#catPop').classList.remove('open');
+  if(!pendingTap)return;
+  inspo.samples.push({cat,hex:pendingTap.hex,relX:pendingTap.relX,relY:pendingTap.relY});
+  pendingTap=null;
+  renderSamples();
+}
+function renderSamples(){
+  const layer=$('#tapLayer');layer.innerHTML='';
+  inspo.samples.forEach((s,ix)=>{
+    const d=document.createElement('div');d.className='tapdot';
+    d.style.left=(s.relX*100)+'%';d.style.top=(s.relY*100)+'%';
+    d.style.background=s.hex;d.textContent=ix+1;
+    d.style.position='absolute';
+    layer.appendChild(d);
+  });
+  Object.assign(layer.style,{position:'absolute',inset:'0',pointerEvents:'none'});
+  const list=$('#sampleList');list.innerHTML='';
+  inspo.samples.forEach((s,ix)=>{
+    const row=document.createElement('div');row.className='sample';
+    row.innerHTML='<span class="sm-dot" style="background:'+esc(s.hex)+'"></span>'+
+      '<span class="sm-cat">'+(ix+1)+' &middot; '+esc(CAT_LABEL[s.cat])+'</span>'+
+      '<button class="sm-x" aria-label="Remove">&times;</button>';
+    row.querySelector('.sm-x').addEventListener('click',()=>{
+      inspo.samples.splice(ix,1);renderSamples();
+    });
+    list.appendChild(row);
+  });
+  $('#matchBtnRow').style.display=inspo.samples.length?'flex':'none';
+  $('#matchBlock').innerHTML='';
+}
+$('#btnMatch').addEventListener('click',()=>{
+  const block=$('#matchBlock');block.innerHTML='';
+  if(!items.length){block.innerHTML='<div class="hint">Your closet is empty — hang some pieces first, then come back to this photo.</div>';return;}
+  const head=document.createElement('div');head.className='section-head';
+  head.innerHTML='<div class="section-title" style="font-size:14px">From your closet</div>';
+  block.appendChild(head);
+  const matchedIds=[];let missing=0;
+  inspo.samples.forEach((s,ix)=>{
+    const pool=items.filter(i=>i.category===s.cat);
+    let best=null,bestD=Infinity;
+    pool.forEach(i=>{const d=deltaE(s.hex,i.colorHex);if(d<bestD){bestD=d;best=i;}});
+    const row=document.createElement('div');
+    row.style.animationDelay=(ix*0.12)+'s';
+    if(best&&bestD<=34){
+      matchedIds.push(best.id);
+      row.className='match-row';
+      row.innerHTML='<div class="m-img"><img class="'+(best.cut?'cutimg':'')+'" alt="" src="'+best.photo+'"></div>'+
+        '<div><div class="m-cat">'+esc(CAT_LABEL[s.cat])+'</div><div class="m-name">'+esc(best.name)+'</div>'+
+        '<div class="m-note">'+(bestD<=12?'A near-exact colour match':'Close in colour — '+esc(best.colorName||'your version')+'')+'</div></div>'+
+        '<span class="badge">'+(bestD<=12?'Match':'Close')+'</span>';
+    } else {
+      missing++;
+      row.className='match-row missing';
+      row.innerHTML='<div class="m-img" style="display:flex;align-items:center;justify-content:center;color:var(--smoke);font-size:20px">&empty;</div>'+
+        '<div><div class="m-cat">'+esc(CAT_LABEL[s.cat])+' — missing</div>'+
+        '<div class="m-name">You don&rsquo;t own this in <span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:'+esc(s.hex)+';vertical-align:-1px"></span> this shade</div>'+
+        (best?'<div class="m-note">Closest you own: '+esc(best.name)+' ('+esc(best.colorName||'different colour')+')</div>':'<div class="m-note">Nothing in this category yet</div>')+
+        '</div><span class="badge bad">To buy</span>';
+    }
+    block.appendChild(row);
+  });
+  if(matchedIds.length){
+    const btnrow=document.createElement('div');btnrow.className='btn-row';
+    const b=document.createElement('button');b.className='btn btn-brass';
+    b.textContent='Save as a look';
+    b.addEventListener('click',async ()=>{
+      const rec={id:uid(),name:'From inspiration',itemIds:[...new Set(matchedIds)],createdAt:Date.now()};
+      await dbPut('outfits',rec);outfits.push(rec);renderOutfits();
+      toast('Saved to Looks');
+    });
+    btnrow.appendChild(b);block.appendChild(btnrow);
+  }
+  if(missing&&matchedIds.length)toast(missing+(missing===1?' piece':' pieces')+' missing — the rest you own');
+  else if(!matchedIds.length)toast('None of it yet — a shopping list, then');
+  else toast('You already own this outfit');
+});
+
+/* ================= Export / import / wipe ================= */
+$('#btnExport').addEventListener('click',()=>{
+  const blob=new Blob([JSON.stringify({v:2,exportedAt:new Date().toISOString(),items,outfits})],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='wardrobe-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  toast('Backup downloaded');
+});
+$('#btnImport').addEventListener('click',()=>$('#fileImport').click());
+$('#fileImport').addEventListener('change',e=>{
+  const f=e.target.files[0];e.target.value='';
+  if(!f)return;
+  const rd=new FileReader();
+  rd.onload=async ()=>{
+    try{
+      const data=JSON.parse(rd.result);
+      if(!Array.isArray(data.items)||!Array.isArray(data.outfits))throw new Error('bad shape');
+      for(const it of data.items)if(it&&it.id&&it.photo)await dbPut('items',it);
+      for(const o of data.outfits)if(o&&o.id&&Array.isArray(o.itemIds))await dbPut('outfits',o);
+      items=await dbAll('items');outfits=await dbAll('outfits');
+      renderCloset();renderOutfits();
+      toast('Wardrobe restored');
+    }catch(err){toast('That file is not a wardrobe backup');}
+  };
+  rd.readAsText(f);
+});
+$('#btnWipe').addEventListener('click',async ()=>{
+  if(!items.length&&!outfits.length)return toast('Already empty');
+  if(!armConfirm('wipe','Tap again to empty the wardrobe \u2014 export first!'))return;
+  await dbClear('items');await dbClear('outfits');await dbClear('meta');
+  items=[];outfits=[];
+  renderCloset();renderOutfits();
+  toast('The rail is bare');
+});
+
+/* ================= Init ================= */
+(async function(){
+  try{
+    await openDB();
+    items=await dbAll('items');
+    outfits=await dbAll('outfits');
+  }catch(e){
+    toast('Storage unavailable — changes will not persist');
+    items=[];outfits=[];
+  }
+  if(memMode){
+    const b=document.createElement('div');
+    b.style.cssText='text-align:center;margin:12px auto 0;max-width:520px;padding:10px 16px;border:1px solid rgba(110,43,43,.6);border-radius:12px;color:#c98080;font-size:12px;line-height:1.6';
+    b.textContent='Preview mode \u2014 this window cannot save permanently. Open the file in Safari and Add to Home Screen: everything works and persists there.';
+    document.querySelector('header.app').appendChild(b);
+  }
+  renderCloset();renderOutfits();
+  setTimeout(()=>document.body.classList.add('settled'),900);
+})();
+</script>
+<style>
+.cutimg{object-fit:contain!important;padding:5%;box-sizing:border-box}
+.split-stage{position:relative;margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--panel);touch-action:none}
+#splitCanvas{display:block;width:100%;height:auto;cursor:crosshair}
+#splitRect{position:absolute;border:2px dashed var(--brass);background:rgba(182,147,82,.14);display:none;pointer-events:none;border-radius:4px}
+.drop-busy{display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;height:100%;color:var(--brass);font-size:11px;letter-spacing:.22em;text-transform:uppercase}
+.spin{width:26px;height:26px;border-radius:50%;border:2px solid var(--brass-soft);border-top-color:var(--brass);animation:sp .9s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+body.sheet-open{overflow:hidden}
+body.settled .garment,body.settled .outfit-card{animation:none}
+</style>
+<script>
+'use strict';
+/* ============ shared helpers (cutout pipeline) ============ */
+function toCanvas(img,max){
+  const r=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));
+  const c=document.createElement('canvas');
+  c.width=Math.max(1,Math.round(img.naturalWidth*r));
+  c.height=Math.max(1,Math.round(img.naturalHeight*r));
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  return c;
+}
+function imgLoad(src){
+  return new Promise((res,rej)=>{
+    const im=new Image();
+    im.onload=()=>res(im);
+    im.onerror=()=>rej(new Error('image failed'));
+    im.src=src;
+  });
+}
+function setDropBusy(msg){
+  if(msg)$('#photoDrop').innerHTML='<div class="drop-busy"><div class="spin"></div><span>'+msg+'</span></div>';
+  else if(pendingPhoto)showDrop(pendingPhoto,pendingCut);
+  else $('#photoDrop').innerHTML='<span class="pd-icon">&#10022;</span><span>Tap to photograph</span>';
+}
+function showDrop(url,cut){
+  $('#photoDrop').innerHTML='<img '+(cut?'style="object-fit:contain"':'')+' alt="" src="'+url+'">';
+}
+async function setColorFrom(url){
+  try{const im=await imgLoad(url);$('#fColor').value=dominantColor(im);}catch(e){}
+}
+/* ============ background removal engine ============ */
+let _rmP=null;
+function getRemover(){
+  if(!_rmP)_rmP=import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm')
+    .then(m=>m.removeBackground||m.default)
+    .catch(err=>{_rmP=null;throw err;});
+  return _rmP;
+}
+function trimAlpha(img){
+  const c=document.createElement('canvas');
+  c.width=img.naturalWidth;c.height=img.naturalHeight;
+  const g=c.getContext('2d',{willReadFrequently:true});
+  g.drawImage(img,0,0);
+  let d;
+  try{d=g.getImageData(0,0,c.width,c.height).data;}catch(e){return null;}
+  let minX=c.width,minY=c.height,maxX=-1,maxY=-1;
+  for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){
+    if(d[(y*c.width+x)*4+3]>20){
+      if(x<minX)minX=x;if(x>maxX)maxX=x;
+      if(y<minY)minY=y;if(y>maxY)maxY=y;
+    }
+  }
+  if(maxX-minX<12||maxY-minY<12)return null;
+  const pad=Math.round(Math.max(maxX-minX,maxY-minY)*0.03);
+  minX=Math.max(0,minX-pad);minY=Math.max(0,minY-pad);
+  maxX=Math.min(c.width-1,maxX+pad);maxY=Math.min(c.height-1,maxY+pad);
+  const out=document.createElement('canvas');
+  out.width=maxX-minX+1;out.height=maxY-minY+1;
+  out.getContext('2d').drawImage(c,minX,minY,out.width,out.height,0,0,out.width,out.height);
+  return out.toDataURL('image/png');
+}
+async function cutoutCanvas(cv){
+  const remove=await getRemover();
+  const blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',0.92));
+  if(!blob)throw new Error('no blob');
+  const outBlob=await remove(blob);
+  const url=URL.createObjectURL(outBlob);
+  try{
+    const im=await imgLoad(url);
+    const trimmed=trimAlpha(im);
+    if(!trimmed)throw new Error('empty cut');
+    return trimmed;
+  }finally{URL.revokeObjectURL(url);}
+}
+/* ============ split-an-outfit sheet ============ */
+document.body.insertAdjacentHTML('beforeend',
+'<div class="scrim" id="scrimSplit"></div>'+
+'<div class="sheet" id="sheetSplit"><button class="sheet-close" data-close="Split" aria-label="Close">&times;</button><div class="sheet-grip"></div><div class="sheet-body">'+
+'<div class="sheet-title">Crop &amp; cut</div>'+
+'<div class="sheet-sub">Any photo &mdash; draw a box, hang the piece</div>'+
+'<div class="btn-row" style="margin-top:4px"><button class="btn btn-ghost" id="btnSplitPhoto">Choose outfit photo</button></div>'+
+'<div class="split-stage" id="splitStage" style="display:none"><canvas id="splitCanvas"></canvas><div id="splitRect"></div></div>'+
+'<div class="hint" id="splitHint" style="display:none">Drag a box around one piece and hang it, then draw the next. Only fabric the camera can actually see can be cut out — a tee fully hidden under a closed jacket has no pixels to cut, so give hidden layers their own quick photo.</div>'+
+'<div class="field" style="margin-top:14px"><label>Name this piece</label><input class="input" id="spName" placeholder="e.g. White tee" maxlength="48"></div>'+
+'<div class="field"><label>Category</label><div class="cat-grid" id="spCats"></div></div>'+
+'<div class="btn-row"><button class="btn btn-brass" id="btnSplitSave" disabled>Cut &amp; hang it</button></div>'+
+'</div></div>'+
+'<input type="file" id="fileSplit" accept="image/*" hidden>');
+
+let spSrc=null, spRect=null, spCat='top', spDrag=null;
+function renderSpCats(){
+  const g=$('#spCats');g.innerHTML='';
+  CATS.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='cat-opt'+(spCat===c.id?' on':'');
+    b.textContent=c.label;
+    b.addEventListener('click',()=>{spCat=c.id;renderSpCats();});
+    g.appendChild(b);
+  });
+}
+function spUpdateSave(){$('#btnSplitSave').disabled=!(spSrc&&spRect);}
+function spSetSource(cv){
+  spSrc=cv;
+  const disp=$('#splitCanvas');
+  const w=Math.max(200,($('#splitStage').parentElement.clientWidth||320)-2);
+  disp.width=Math.round(w);
+  disp.height=Math.round(w*spSrc.height/spSrc.width);
+  disp.getContext('2d').drawImage(spSrc,0,0,disp.width,disp.height);
+  $('#splitStage').style.display='';
+  $('#splitHint').style.display='';
+  $('#btnSplitPhoto').textContent='Choose a different photo';
+  spRect=null;$('#splitRect').style.display='none';
+  spUpdateSave();
+}
+async function spLoadFromDataURL(dataURL){
+  try{
+    const im=await imgLoad(dataURL);
+    spSetSource(toCanvas(im,1400));
+  }catch(e){toast('Could not load that photo');}
+}
+function openSplit(prefill){
+  renderSpCats();spUpdateSave();
+  openSheet('Split');
+  if(prefill)spLoadFromDataURL(prefill);
+  else if(!spSrc)$('#fileSplit').click();
+}
+$('#scrimSplit').addEventListener('click',()=>closeSheet('Split'));
+$('#btnSplitPhoto').addEventListener('click',()=>$('#fileSplit').click());
+$('#fileSplit').addEventListener('change',async e=>{
+  const f=e.target.files[0];
+  if(!f){e.target.value='';return;}
+  try{
+    const {img,url}=await fileToImage(f);
+    spSetSource(toCanvas(img,1400));
+    URL.revokeObjectURL(url);
+  }catch(err){toast(err.message);}
+  e.target.value='';
+});
+const spCv=()=>$('#splitCanvas');
+function spPos(e){
+  const r=spCv().getBoundingClientRect();
+  return {x:Math.max(0,Math.min(r.width,e.clientX-r.left)),
+          y:Math.max(0,Math.min(r.height,e.clientY-r.top)),rw:r.width,rh:r.height};
+}
+document.addEventListener('pointerdown',e=>{
+  if(e.target!==spCv())return;
+  e.preventDefault();
+  spDrag={a:spPos(e)};
+  spCv().setPointerCapture(e.pointerId);
+});
+document.addEventListener('pointermove',e=>{
+  if(!spDrag)return;
+  spDrag.b=spPos(e);
+  const a=spDrag.a,b=spDrag.b;
+  const x=Math.min(a.x,b.x),y=Math.min(a.y,b.y),w=Math.abs(a.x-b.x),h=Math.abs(a.y-b.y);
+  const o=$('#splitRect');
+  o.style.display='block';
+  o.style.left=x+'px';o.style.top=y+'px';o.style.width=w+'px';o.style.height=h+'px';
+});
+document.addEventListener('pointerup',e=>{
+  if(!spDrag)return;
+  const a=spDrag.a,b=spDrag.b||spDrag.a;spDrag=null;
+  const x=Math.min(a.x,b.x),y=Math.min(a.y,b.y),w=Math.abs(a.x-b.x),h=Math.abs(a.y-b.y);
+  if(w<24||h<24){spRect=null;$('#splitRect').style.display='none';spUpdateSave();return;}
+  spRect={x,y,w,h,rw:a.rw,rh:a.rh};
+  spUpdateSave();
+});
+/* ============ Worn fits (photo looks) ============ */
+let fitEditingId=null;
+function openFitView(id){
+  const o=outfits.find(x=>x.id===id);if(!o)return;
+  fitEditingId=id;
+  $('#fitImg').src=o.photoLook||'';
+  $('#fitName').value=o.name||'';
+  openSheet('Fit');
+}
+$('#scrimFit').addEventListener('click',()=>closeSheet('Fit'));
+$('#btnFitPhoto').addEventListener('click',()=>$('#fileFit').click());
+$('#fileFit').addEventListener('change',async e=>{
+  const f=e.target.files[0];e.target.value='';
+  if(!f)return;
+  try{
+    const {img,url}=await fileToImage(f);
+    const cv=toCanvas(img,1000);
+    URL.revokeObjectURL(url);
+    const rec={id:uid(),name:'Fit \u2014 '+new Date().toLocaleDateString(),itemIds:[],
+      photoLook:cv.toDataURL('image/jpeg',0.8),createdAt:Date.now()};
+    await dbPut('outfits',rec);outfits.push(rec);
+    renderOutfits();openFitView(rec.id);
+    toast('Fit saved \u2014 name it if you like');
+  }catch(err){toast(err.message);}
+});
+$('#btnFitSave').addEventListener('click',async ()=>{
+  const o=outfits.find(x=>x.id===fitEditingId);if(!o)return;
+  o.name=$('#fitName').value.trim()||o.name;
+  await dbPut('outfits',o);
+  renderOutfits();closeSheet('Fit');toast('Saved');
+});
+$('#btnFitDelete').addEventListener('click',async ()=>{
+  if(!armConfirm('delFit','Tap Remove again to confirm'))return;
+  const ix=outfits.findIndex(x=>x.id===fitEditingId);if(ix<0)return;
+  await dbDel('outfits',outfits[ix].id);
+  outfits.splice(ix,1);
+  closeSheet('Fit');renderOutfits();toast('Removed');
+});
+$('#btnSplitSave').addEventListener('click',async ()=>{
+  if(!spSrc||!spRect)return;
+  const btn=$('#btnSplitSave');
+  btn.disabled=true;const old=btn.textContent;btn.textContent='Cutting…';
+  try{
+    const fx=spSrc.width/spRect.rw, fy=spSrc.height/spRect.rh;
+    const crop=document.createElement('canvas');
+    crop.width=Math.max(1,Math.round(spRect.w*fx));
+    crop.height=Math.max(1,Math.round(spRect.h*fy));
+    crop.getContext('2d').drawImage(spSrc,
+      Math.round(spRect.x*fx),Math.round(spRect.y*fy),crop.width,crop.height,
+      0,0,crop.width,crop.height);
+    let photo=null,cut=false;
+    try{photo=await cutoutCanvas(crop);cut=true;}
+    catch(_){photo=crop.toDataURL('image/jpeg',0.85);cut=false;}
+    const im=await imgLoad(photo);
+    const rec={id:uid(),name:$('#spName').value.trim()||('From outfit — '+CAT_LABEL[spCat]),
+      category:spCat,colorHex:dominantColor(im),colorName:'',photo,cut,createdAt:Date.now()};
+    await dbPut('items',rec);items.push(rec);
+    renderCloset();
+    $('#spName').value='';spRect=null;$('#splitRect').style.display='none';spUpdateSave();
+    toast(cut?'Cut out and hung — draw the next piece':'Hung (uncut) — draw the next piece');
+  }catch(err){toast('Could not save that piece');}
+  btn.textContent=old;spUpdateSave();
+});
+</script>
+</body>
+</html>
